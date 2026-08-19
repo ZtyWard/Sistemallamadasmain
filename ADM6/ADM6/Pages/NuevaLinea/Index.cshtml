@@ -1,0 +1,76 @@
+@page
+@model ADM6.Pages.NuevaLinea.IndexModel
+
+@{
+    ViewData["Title"] = "Nuevas líneas";
+}
+
+<div class="page-heading page-heading-actions">
+    <div>
+        <h1>Nuevas líneas telefónicas</h1>
+        <p>Consulte las líneas disponibles para venta y administre su registro.</p>
+    </div>
+    <a class="btn-primary command-link" asp-page="/NuevaLinea/Nuevo">Nueva línea</a>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{
+    <div class="message @(Model.EsError ? "message-error" : "message-success")"
+         role="status">
+        @Model.Mensaje
+    </div>
+}
+
+<section class="table-card" aria-labelledby="titulo-lineas-disponibles">
+    <div class="table-card-header">
+        <div>
+            <h2 id="titulo-lineas-disponibles">Líneas disponibles</h2>
+            <p>@Model.Lineas.Count registro(s) listo(s) para vender</p>
+        </div>
+    </div>
+
+    @if (Model.Lineas.Count == 0)
+    {
+        <div class="empty-state">
+            <strong>No hay líneas disponibles.</strong>
+            <span>Registre una nueva línea para que aparezca en este listado.</span>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Número de teléfono</th>
+                        <th>Identificador de tarjeta</th>
+                        <th>Tipo de servicio</th>
+                        <th>Estado</th>
+                        <th class="actions-column">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var linea in Model.Lineas)
+                    {
+                        <tr>
+                            <td><strong>@linea.Telefono</strong></td>
+                            <td>@linea.IdentificadorTarjeta</td>
+                            <td>@(linea.TipoServicio == "POSTPAGO" ? "Postpago" : "Prepago")</td>
+                            <td><span class="status status-available">Disponible</span></td>
+                            <td>
+                                <form method="post" asp-page-handler="Eliminar"
+                                      onsubmit="return confirm('¿Está seguro de borrar la línea telefónica?');">
+                                    <input type="hidden" name="telefono" value="@linea.Telefono" />
+                                    <button type="submit" class="small-button danger-button"
+                                            aria-label="Eliminar la línea @linea.Telefono">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

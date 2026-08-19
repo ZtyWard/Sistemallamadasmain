@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Central General</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="app-shell">
+        <header class="site-header">
+            <div class="header-main page-width">
+                <span class="app-brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.4 3.5 5.8 5.1c-.8.8-.9 2.1-.3 3.1 2.3 3.8 5.5 6.9 9.3 9.3 1 .6 2.3.5 3.1-.3l1.6-1.6c.5-.5.5-1.3 0-1.8l-2.4-2.4c-.4-.4-1-.5-1.5-.2l-1.7 1c-1.7-1-3.1-2.4-4.1-4.1l1-1.7c.3-.5.2-1.1-.2-1.5L9.2 3.5c-.5-.5-1.3-.5-1.8 0Z" /></svg></span>
+                <a class="wordmark" href="/Facturacion">
+                    <strong>Central General</strong>
+                    <span>Control de llamadas</span>
+                </a>
+
+                <div class="account-links">
+                    <span class="account-name">@(Context.Session.GetString("AdministradorNombre") ?? "Administrador")</span>
+                    <a asp-page="/Administradores/Salir">Cerrar sesión</a>
+                </div>
+
+                <button type="button" class="menu-toggle" data-menu-toggle
+                        aria-controls="primary-navigation" aria-expanded="false">
+                    Menú
+                </button>
+            </div>
+
+            <nav class="primary-nav" id="primary-navigation" aria-label="Navegación administrativa">
+                <div class="page-width nav-links">
+                    <a href="/Facturacion" class="nav-item">Facturación</a>
+                    <a asp-page="/NuevaLinea/Index" class="nav-item">Nuevas líneas</a>
+                    <a asp-page="/ActivarLinea" class="nav-item">Activar línea</a>
+                    <a asp-page="/DesactivarLinea" class="nav-item">Devolución de línea</a>
+                    <a asp-page="/Administradores/Gestion" class="nav-item">Administradores</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="page-content page-width">
+                @RenderBody()
+            </div>
+        </main>
+        <footer class="app-footer">© 2026 Central General. Todos los derechos reservados.</footer>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/app-shell.js" asp-append-version="true"></script>
+</body>
+</html>

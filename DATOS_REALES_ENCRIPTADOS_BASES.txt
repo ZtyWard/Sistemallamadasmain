@@ -1,0 +1,280 @@
+DATOS REALES EXISTENTES EN LAS BASES - CIFRADOS LISTOS
+=======================================================
+
+Estos registros fueron consultados directamente en SQL Server, MySQL y MongoDB.
+No son datos reservados ni datos pendientes de crear.
+No utilizar estos registros para demostrar una creacion exitosa porque ya existen.
+
+
+1. LINEA REAL 70000000
+----------------------
+
+Existe en SQL Server: SI
+Existe en MySQL: SI
+Tipo: PREPAGO
+Estado SQL Server: ACTIVO
+Estado MySQL: ACTIVO
+Cliente: 101010101
+Saldo: 1000.00
+
+DATOS EN TEXTO NORMAL:
+
+Telefono: 70000000
+Identificador del telefono: 1000000000000010
+Identificador de tarjeta: 2000000000000000010
+Identificacion del cliente: 101010101
+
+CIFRADOS AES-CBC PARA WS_PROVEEDOR:
+
+telefonoEncriptado:
+e68PDIj9bgoUopWUJt1fSg7mZTUHH1Qeuk5OCEKXjQ4=
+
+identificadorTelefonoEncriptado:
+8fbgNccn52/Rkrb1vdYrDJRI3xO19a9ICmqqeplf/iXbFohO4vSoJebvRJpln01M
+
+identificadorTarjetaEncriptado:
+uRvPCo1ld8Br+kyTs+QV2Zqiq9TWU5ZOsbp7C/+2qBYKrXwDc2J2JtFDmOccWW3F
+
+tipoEncriptado para PREPAGO:
+rLv6rMEbf8OrnCQOrW1ZNIGQMS/C/wsScKXRj/Ne+9c=
+
+identificacionClienteEncriptada:
+1B6eIAqMmOlky/b+uWJRmLgL50Tam01pIFXBRcDhgXM=
+
+estadoEncriptado para ACTIVO:
+CQmL5YCoikkGLCSwalgk6YQwEagZNbAXuwecXncIg1I=
+
+estadoEncriptado para DISPONIBLE/desactivar:
+pQ4ICEJTY0viBRn5dkBXD/XGK37QjLemmjnV7pNjqco=
+
+CIFRADO AES-GCM PARA WS_IDENTIFICADOR1:
+
+telefonoEncriptado:
+KNfrqWVH6hJ54a3U7i02J5Vz0VRf24PTfKcZfL3CTjCSezPa
+
+origen:
+WEB
+
+tipoTransaccion:
+saldo
+
+Uso seguro:
+- ConsultarSaldo debe devolver 1000.00 en formato de 19 posiciones.
+- IngresarServicioNuevoDisponible debe rechazarlo porque ya existe.
+
+Precaucion:
+ActivarDesactivarServicio con DISPONIBLE desactiva realmente esta linea
+en SQL Server y MySQL. No hacerlo si se quiere conservar activa.
+
+
+2. LINEA REAL 25743715
+----------------------
+
+Existe en SQL Server: SI
+Existe en MySQL: SI
+Tipo: PREPAGO
+Estado: ACTIVO
+Cliente de SQL Server: 101110111
+Saldo: 5000.00
+
+DATOS EN TEXTO NORMAL:
+
+Telefono: 25743715
+Identificador del telefono: 1000000000000001
+Identificador de tarjeta: 2000000000000000001
+Identificacion del cliente: 101110111
+
+CIFRADOS AES-CBC PARA WS_PROVEEDOR:
+
+telefonoEncriptado:
+an+D/OOZQps3vEWZFEKSFlMDRqCdv5uHNCreSOSI9eY=
+
+identificadorTelefonoEncriptado:
+CzdZqE1WcjetzHbEFZfss1pupAx96I5AHtSM0UUfM/eZkoYCvZJmxCYv6MEBZdh2
+
+identificadorTarjetaEncriptado:
+6HuG7aGwF3ldp2vHFCxTqGHpOzE+swsgz3+TYsTJy+9mIFSV1GRUfm6rN+7KOPST
+
+tipoEncriptado:
+rLv6rMEbf8OrnCQOrW1ZNIGQMS/C/wsScKXRj/Ne+9c=
+
+identificacionClienteEncriptada:
+QyxtgIrS7bJzHkGuydKuwXTODbmDzQfgto6DZYsjzOo=
+
+CIFRADO AES-GCM PARA WS_IDENTIFICADOR1:
+
+telefonoEncriptado:
+4Ef9GpD76fRbhwvwB7oNwNhEt1eKY0tFhhjPNLRkL7JS/4IR
+
+origen:
+WEB
+
+tipoTransaccion:
+saldo
+
+Resultado esperado:
+Resultado = true
+Mensaje = Exitoso
+Saldo = 0000000000000500000
+
+
+3. LINEA REAL PREPARADA PARA FACTURACION
+-----------------------------------------
+
+Telefono: 88886666
+Identificador del telefono: 1000000000000008
+Identificador de tarjeta: 2000000000000000008
+Cliente: 808880888
+Tipo: POSTPAGO
+Estado: ACTIVO
+Movimientos: 2
+Costos: 75.39 y 70.00
+Total: 145.39
+Facturas actuales: 0
+
+CalcularFacturacion no recibe datos cifrados.
+
+fechaCalculo:
+2026-07-24
+
+fechaMaximaPago:
+2026-07-31
+
+Resultado esperado:
+Resultado = true
+Mensaje = Exitoso
+Factura creada = 145.39
+
+
+4. USUARIO REAL ADMINISTRADOR EN MONGODB
+-----------------------------------------
+
+Existe en MongoDB: SI
+Identificacion: 101010101
+Nombre: Administrador Sistema Central
+Correo: admin@centralgeneral.com
+Estado: activo
+Tipo: 1
+
+usuarioEncriptado almacenado en MongoDB:
+qSO56tlrF9Qa4sBHFndZjEnlndmfebUznuWYNidgLr8=
+
+contrasenaEncriptada almacenada en MongoDB:
+txsVsanaGRlJGWXBwlMi/F5oTe5WtWAMxMDaUM8iGAU=
+
+DATOS PARA WS_AUTENTICACION1 - AUTENTICAR:
+
+usuarioEncriptado:
+qSO56tlrF9Qa4sBHFndZjEnlndmfebUznuWYNidgLr8=
+
+contrasenaEncriptada:
+txsVsanaGRlJGWXBwlMi/F5oTe5WtWAMxMDaUM8iGAU=
+
+tipoUsuario:
+1
+
+Resultado esperado:
+Resultado = true
+Mensaje = Exitoso
+
+
+5. USUARIO REAL CLIENTE EN MONGODB
+-----------------------------------
+
+Existe en MongoDB: SI
+Identificacion: 202020202
+Nombre: Cliente Prueba Central
+Correo: cliente@centralgeneral.com
+Estado: activo
+Tipo: 2
+
+usuarioEncriptado:
+EaWDZ7A9+0YNTqusYKEQQVQt7zTWOnUKbuL7NlyzW6E=
+
+contrasenaEncriptada:
+gI+qP70QXtyeGP15tnsXViJovCs1LzffaawZyPFFxKE=
+
+tipoUsuario:
+2
+
+Resultado esperado:
+Resultado = true
+Mensaje = Exitoso
+
+
+6. OTRO USUARIO REAL ACTIVO EN MONGODB
+----------------------------------------
+
+Existe en MongoDB: SI
+Identificacion: 816113374
+Nombre: Fabian Mora Soto
+Correo: nuevo.demo161133@example.com
+Estado: activo
+Tipo: 1
+
+usuarioEncriptado:
+842Txw60LoBavSD4VWKMY4gQ4zlAJmOkGffYib5xU/Y=
+
+contrasenaEncriptada:
+7OnMIyi7y9Ubn9tAfkuldNdEtWC81jvh2zrt0cb19B4=
+
+tipoUsuario:
+1
+
+Resultado esperado:
+Resultado = true
+Mensaje = Exitoso
+
+
+RESUMEN
+-------
+
+Consulta de saldo real recomendada: 25743715
+Consulta de saldo alternativa: 70000000
+Facturacion real preparada: 88886666
+Autenticacion real administrador: identificacion 101010101
+Autenticacion real cliente: identificacion 202020202
+
+
+VERIFICACION EJECUTADA EL 2026-07-22
+-------------------------------------
+
+ProbarConexionProveedor:
+Resultado = true
+Mensaje = Exitoso
+
+ConsultarSaldo 70000000:
+Resultado = true
+Saldo = 0000000000000100000
+
+ConsultarSaldo 25743715:
+Resultado = true
+Saldo = 0000000000000500000
+
+Autenticar administrador real:
+Resultado = true
+
+Autenticar cliente real:
+Resultado = true
+
+Autenticar usuario Fabian real:
+Resultado = true
+
+IngresarServicioNuevoDisponible con 70000000 existente:
+Resultado = false
+Motivo registrado por Java = Telefono en uso
+
+ActivarDesactivarServicio con ACTIVO sobre 70000000 ya activa:
+Resultado = false
+Motivo registrado por Java = Telefono en uso
+
+Estado confirmado despues de las pruebas:
+70000000 sigue PREPAGO y ACTIVO en SQL Server y MySQL.
+Saldo de 70000000 sigue en 1000.00.
+88886666 conserva dos movimientos y cero facturas.
+
+CalcularFacturacion no se ejecuto definitivamente durante esta verificacion
+para no consumir la factura preparada para la exposicion. El procedimiento
+ya fue comprobado previamente dentro de una transaccion con ROLLBACK.
+
+FIN

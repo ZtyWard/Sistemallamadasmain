@@ -1,0 +1,55 @@
+@page "/Facturacion"
+@model ADM6.Pages.FacturacionModel
+@{
+    ViewData["Title"] = "Cálculo de facturación";
+}
+
+<div class="page-heading">
+    <h1>Cálculo de facturación</h1>
+    <p>Seleccione las fechas para calcular la facturación de las líneas postpago activas.</p>
+</div>
+
+<section class="billing-card">
+    <h2>Período de facturación</h2>
+    <form method="post" asp-page-handler="Calcular">
+        <div class="date-grid">
+            <div class="field">
+                <label for="fechaInicio">Fecha de cálculo</label>
+                <input type="date" id="fechaInicio" name="fechaInicio"
+                       value="@Model.Facturacion.FechaInicio.ToString("yyyy-MM-dd")" required />
+            </div>
+            <div class="field">
+                <label for="fechaFin">Fecha máxima de pago</label>
+                <input type="date" id="fechaFin" name="fechaFin"
+                       value="@Model.Facturacion.FechaFin.ToString("yyyy-MM-dd")" required />
+            </div>
+        </div>
+
+        <div class="information-grid section-gap">
+            <div class="info-card">
+                <h3>Última facturación realizada</h3>
+                @if (Model.Facturacion.UltimaFacturacion.HasValue)
+                {
+                    <strong>@Model.Facturacion.UltimaFacturacion.Value.ToString("dd/MM/yyyy")</strong>
+                }
+                else
+                {
+                    <span>Todavía no se ha registrado una facturación.</span>
+                }
+            </div>
+            <div class="info-card">
+                <h3>Información</h3>
+                <span>Este proceso genera las facturas correspondientes en el Proveedor.</span>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Facturacion.Mensaje))
+        {
+            <div class="message @(Model.Facturacion.EsError ? "message-error" : "message-success")">
+                @Model.Facturacion.Mensaje
+            </div>
+        }
+
+        <button type="submit" class="calculate-button">Calcular facturación</button>
+    </form>
+</section>

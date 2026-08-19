@@ -1,0 +1,46 @@
+@page
+@model ADM6.Pages.Administradores.LoginModel
+@{ Layout = null; ViewData["Title"] = "Ingreso administrativo"; }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ingreso administrativo - Central General</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="public-page">
+    <header class="public-header">
+        <div class="page-width">
+            <a class="wordmark wordmark-public" asp-page="/Acceso">
+                <strong>Central General</strong>
+                <span>Control de llamadas</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="login-main">
+        <a class="back-link" asp-page="/Acceso">← Volver</a>
+        <h1>Ingreso administrativo</h1>
+        <p class="login-lead">Escriba sus credenciales para continuar.</p>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+        {
+            <div class="message message-error" role="alert">@Model.Mensaje</div>
+        }
+
+        <form method="post" class="auth-form">
+            <div class="field">
+                <label asp-for="Usuario">Usuario</label>
+                <input asp-for="Usuario" autocomplete="username" required autofocus />
+            </div>
+            <div class="field">
+                <label asp-for="Contrasena">Contraseña</label>
+                <input asp-for="Contrasena" type="password"
+                       autocomplete="current-password" required />
+            </div>
+            <button class="calculate-button auth-submit" type="submit">Ingresar</button>
+        </form>
+    </main>
+</body>
+</html>

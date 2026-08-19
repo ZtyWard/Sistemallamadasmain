@@ -1,0 +1,193 @@
+﻿@page
+
+@model ADM6.Pages.Cliente.DevolverLinea.IndexModel
+
+@{
+    Layout = "/Pages/Shared/_ClienteLayout.cshtml";
+    ViewData["Title"] = "Devolver línea";
+}
+
+<div class="page-heading">
+
+    <h1>
+        Devolver línea
+    </h1>
+
+    <p>
+        Seleccione la línea telefónica que desea devolver.
+    </p>
+
+</div>
+
+
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{
+    <div class="message @(Model.EsError
+                 ? "message-error"
+                 : "message-success")">
+
+    <span>
+        @(Model.EsError ? "⚠" : "✓")
+    </span>
+
+        <span>
+            @Model.Mensaje
+        </span>
+
+    </div>
+}
+
+
+<div class="billing-card">
+
+    <h2>
+        Línea telefónica
+    </h2>
+
+
+    <form method="post">
+
+        <!-- =====================================================
+             NÚMERO DE LÍNEA
+             ===================================================== -->
+
+        <div class="field">
+
+            <label for="Telefono">
+                Número de teléfono
+            </label>
+
+            <select asp-for="Telefono" id="Telefono" required>
+                <option value="">Seleccione una línea</option>
+                @foreach (var linea in Model.Lineas)
+                {
+                    <option value="@linea.Telefono">
+                        @linea.Telefono - @linea.TipoServicio
+                        @(linea.TipoServicio == "PREPAGO"
+                            ? $"- Saldo ₡{linea.Saldo:N2}"
+                            : $"- Pendiente ₡{linea.MontoPendiente:N2}")
+                    </option>
+                }
+            </select>
+
+            <small>
+                Solo se muestran las líneas activas del cliente conectado.
+            </small>
+
+        </div>
+
+
+        <!-- =====================================================
+             INFORMACIÓN DE LA DEVOLUCIÓN
+             ===================================================== -->
+
+        <div class="information-grid section-gap">
+
+            <div class="info-card">
+
+                <h3>
+                    Información
+                </h3>
+
+                <p>
+                    La línea debe encontrarse actualmente
+                    <strong>ACTIVA</strong>.
+                </p>
+
+                <p>
+                    La devolución eliminará la asociación de
+                    la línea con el cliente.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <h3>
+                    Después de devolverla
+                </h3>
+
+                <p>
+                    Estado de la línea:
+                    <strong>INACTIVO</strong>
+                </p>
+
+                <p>
+                    Estado de la tarjeta:
+                    <strong>INACTIVA</strong>
+                </p>
+
+                <p>
+                    Saldo:
+                    <strong>₡0</strong>
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             ADVERTENCIA
+             ===================================================== -->
+
+        <div class="info-card warning-panel section-gap">
+
+            <h3>
+                Importante
+            </h3>
+
+            <p>
+                La devolución de la línea no se puede deshacer.
+            </p>
+
+            <p>
+                El saldo restante no será reembolsado.
+            </p>
+
+        </div>
+
+
+        <!-- =====================================================
+             CONFIRMACIÓN
+             ===================================================== -->
+
+        <div class="field confirmation-field section-gap">
+
+            <label class="checkbox-label">
+
+                <input asp-for="ConfirmarDevolucion"
+                       type="checkbox" />
+
+                <span>
+                    ¿Está seguro de querer devolver la línea telefónica?
+                </span>
+
+            </label>
+
+        </div>
+
+
+        <!-- =====================================================
+             BOTÓN
+             ===================================================== -->
+
+        <div class="action-container">
+
+            <button type="submit"
+                    class="calculate-button">
+
+                <span>
+                    ↩
+                </span>
+
+                Confirmar devolución
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>

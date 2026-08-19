@@ -1,0 +1,432 @@
+﻿@page
+
+@model ADM6.Pages.Cliente.RecargarSaldo.IndexModel
+
+@{
+    Layout = "/Pages/Shared/_ClienteLayout.cshtml";
+    ViewData["Title"] = "Recargar saldo";
+}
+
+
+<div class="page-heading">
+
+    <h1>
+        Recargar saldo - Prepago
+    </h1>
+
+    <p>
+        Seleccione la línea y el monto a recargar.
+    </p>
+
+</div>
+
+
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{
+    <div class="message @(Model.EsError
+                 ? "message-error"
+                 : "message-success")">
+
+    <span>
+        @(Model.EsError ? "⚠" : "✓")
+    </span>
+
+        <span>
+            @Model.Mensaje
+        </span>
+
+    </div>
+}
+
+
+<div class="billing-card">
+
+    <h2>
+        Recargar saldo
+    </h2>
+
+
+    <form method="post">
+
+
+        <!-- =====================================================
+             SELECCIONAR LÍNEA
+             ===================================================== -->
+
+        <div class="field">
+
+            <label for="NumeroLinea">
+                Seleccionar línea prepago
+            </label>
+
+            <select asp-for="NumeroLinea"
+                    id="NumeroLinea"
+                    onchange="actualizarSaldo()">
+
+                @foreach (var linea in Model.Lineas)
+                {
+                    <option value="@linea.Numero"
+                            data-saldo="@linea.Saldo.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+
+                        @linea.Numero
+                        - Saldo actual
+                        ₡@linea.Saldo.ToString("N0")
+
+                    </option>
+                }
+
+            </select>
+
+        </div>
+
+
+        <!-- =====================================================
+             INFORMACIÓN
+             ===================================================== -->
+
+        <div class="information-grid">
+
+
+            <div class="info-card">
+
+                <h3>
+                    Saldo actual
+                </h3>
+
+                <p>
+                    Línea seleccionada:
+                </p>
+
+                <strong id="lineaActual">
+                    @Model.NumeroLinea
+                </strong>
+
+
+                <p class="info-spacer">
+                    Saldo disponible:
+                </p>
+
+                <strong id="saldoActual" class="metric-value">
+
+                    ₡@Model.SaldoActual.ToString("N0")
+
+                </strong>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <h3>
+                    Información
+                </h3>
+
+                <p>
+                    La recarga aumentará el saldo actual
+                    de la línea seleccionada.
+                </p>
+
+                <p>
+                    Seleccione un monto y confirme
+                    la recarga.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             MONTO
+             ===================================================== -->
+
+        <div class="form-section">
+
+            <div class="field">
+
+                <label for="Monto">
+                    Monto a recargar
+                </label>
+
+                <input asp-for="Monto"
+                       id="Monto"
+                       type="number"
+                       min="1"
+                       step="1"
+                       placeholder="Ingrese el monto"
+                       oninput="actualizarResumen()" />
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             MONTOS RÁPIDOS
+             ===================================================== -->
+
+        <div class="quick-amount-section">
+
+            <label class="field-label-static">
+
+                Monto a recargar
+
+            </label>
+
+
+            <div class="quick-amounts">
+
+
+                <button type="button"
+                        class="btn-secondary quick-amount-button"
+                        onclick="seleccionarMonto(1000)">
+
+                    ₡1.000
+
+                </button>
+
+
+                <button type="button"
+                        class="btn-secondary quick-amount-button"
+                        onclick="seleccionarMonto(2000)">
+
+                    ₡2.000
+
+                </button>
+
+
+                <button type="button"
+                        class="btn-secondary quick-amount-button"
+                        onclick="seleccionarMonto(5000)">
+
+                    ₡5.000
+
+                </button>
+
+
+                <button type="button"
+                        class="btn-secondary quick-amount-button"
+                        onclick="seleccionarMonto(10000)">
+
+                    ₡10.000
+
+                </button>
+
+
+                <button type="button"
+                        class="btn-secondary quick-amount-button"
+                        onclick="document.getElementById('Monto').focus()">
+
+                    Otro
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             RESUMEN
+             ===================================================== -->
+
+        <div class="information-grid">
+
+            <div class="info-card">
+
+                <h3>
+                    Resumen de la recarga
+                </h3>
+
+
+                <p>
+                    Línea:
+
+                    <strong id="resumenLinea">
+                        @Model.NumeroLinea
+                    </strong>
+                </p>
+
+
+                <p>
+                    Monto a recargar:
+
+                    <strong id="resumenMonto">
+                        ₡0
+                    </strong>
+                </p>
+
+
+                <p>
+                    Nuevo saldo:
+
+                    <strong id="nuevoSaldo">
+                        ₡@Model.SaldoActual.ToString("N0")
+                    </strong>
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <h3>
+                    Datos requeridos
+                </h3>
+
+
+                <p>
+                    Línea:
+                    <strong>Prepago</strong>
+                </p>
+
+
+                <p>
+                    Monto:
+                    <strong>Mayor a ₡0</strong>
+                </p>
+
+
+                <p>
+                    Estado:
+                    <strong>Disponible</strong>
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             BOTÓN
+             ===================================================== -->
+
+        <div class="action-container">
+
+            <button type="submit"
+                    class="calculate-button">
+
+                <span>
+                    ▣
+                </span>
+
+                Confirmar recarga
+
+            </button>
+
+        </div>
+
+
+    </form>
+
+</div>
+
+
+<script>
+
+    function convertirSaldo(valor) {
+
+        const texto = String(valor ?? "")
+            .trim()
+            .replace(/\s/g, "")
+            .replace(",", ".");
+
+        const saldo = Number(texto);
+
+        return Number.isFinite(saldo)
+            ? saldo
+            : 0;
+    }
+
+    function seleccionarMonto(monto) {
+
+        document.getElementById("Monto").value = monto;
+
+        actualizarResumen();
+
+    }
+
+
+    function actualizarSaldo() {
+
+        const select =
+            document.getElementById("NumeroLinea");
+
+        const option =
+            select.options[
+                select.selectedIndex
+            ];
+
+        if (!option) {
+            return;
+        }
+
+        const saldo =
+            convertirSaldo(option.dataset.saldo);
+
+
+        document.getElementById(
+            "lineaActual"
+        ).textContent =
+            select.value;
+
+
+        document.getElementById(
+            "saldoActual"
+        ).textContent =
+            "₡" + saldo.toLocaleString("es-CR");
+
+
+        document.getElementById(
+            "resumenLinea"
+        ).textContent =
+            select.value;
+
+
+        actualizarResumen();
+
+    }
+
+
+    function actualizarResumen() {
+
+        const select =
+            document.getElementById("NumeroLinea");
+
+        const option =
+            select.options[
+                select.selectedIndex
+            ];
+
+
+        if (!option) {
+            return;
+        }
+
+
+        const saldo =
+            convertirSaldo(option.dataset.saldo);
+
+
+        const monto =
+            Number(
+                document.getElementById("Monto").value
+            ) || 0;
+
+
+        document.getElementById(
+            "resumenMonto"
+        ).textContent =
+            "₡" + monto.toLocaleString("es-CR");
+
+
+        document.getElementById(
+            "nuevoSaldo"
+        ).textContent =
+            "₡" +
+            (saldo + monto)
+                .toLocaleString("es-CR");
+
+    }
+
+</script>

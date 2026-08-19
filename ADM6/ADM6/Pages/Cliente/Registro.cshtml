@@ -1,0 +1,50 @@
+@page
+@model ADM6.Pages.Cliente.RegistroModel
+@{ Layout = null; ViewData["Title"] = "Registro de cliente"; }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registro de cliente - Central General</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="public-page">
+    <header class="public-header">
+        <div class="page-width">
+            <a class="wordmark wordmark-public" asp-page="/Acceso">
+                <strong>Central General</strong>
+                <span>Portal de clientes</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="registration-main">
+        <a class="back-link" asp-page="/Cliente/Login">← Volver al ingreso</a>
+        <h1>Crear cuenta</h1>
+        <p class="login-lead">Complete todos los campos.</p>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+        {
+            <div class="message @(Model.Exitoso ? "message-success" : "message-error")" role="status">
+                @Model.Mensaje
+            </div>
+        }
+
+        <form method="post" class="auth-form registration-form">
+            <div class="date-grid">
+                <div class="field"><label>Identificación</label><input asp-for="Entrada.Identificacion" required /></div>
+                <div class="field"><label>Nombre</label><input asp-for="Entrada.Nombre" required /></div>
+                <div class="field"><label>Primer apellido</label><input asp-for="Entrada.PrimerApellido" required /></div>
+                <div class="field"><label>Segundo apellido</label><input asp-for="Entrada.SegundoApellido" required /></div>
+                <div class="field"><label>Correo electrónico</label><input asp-for="Entrada.CorreoElectronico" type="email" required /></div>
+                <div class="field"><label>Usuario</label><input asp-for="Entrada.Usuario" required /></div>
+                <div class="field"><label>Contraseña</label><input asp-for="Entrada.Contrasena" type="password" minlength="14" maxlength="14" required /></div>
+                <div class="field"><label>Confirmar contraseña</label><input asp-for="Entrada.ConfirmarContrasena" type="password" minlength="14" maxlength="14" required /></div>
+            </div>
+            <p class="field-help">La contraseña debe tener exactamente 14 caracteres e incluir mayúscula, minúscula, número y carácter especial.</p>
+            <button class="calculate-button auth-submit" type="submit">Crear cuenta</button>
+        </form>
+    </main>
+</body>
+</html>

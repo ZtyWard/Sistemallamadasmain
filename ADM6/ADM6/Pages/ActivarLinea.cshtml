@@ -1,0 +1,127 @@
+@page
+@model ADM6.Pages.ActivarLineaModel
+
+@{
+    ViewData["Title"] = "Activar línea";
+}
+
+<div class="page-heading">
+    <h1>Activar línea telefónica</h1>
+    <p>Seleccione una línea disponible y asóciela con la identificación del cliente.</p>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{
+    <div class="message @(Model.EsError ? "message-error" : "message-success")"
+         role="status">
+        @Model.Mensaje
+    </div>
+}
+
+<form method="post">
+    <section class="table-card" aria-labelledby="titulo-activar-lineas">
+        <div class="table-card-header">
+            <div>
+                <h2 id="titulo-activar-lineas">Líneas disponibles</h2>
+                <p>Seleccione el servicio vendido que desea activar.</p>
+            </div>
+        </div>
+
+        @if (Model.Lineas.Count == 0)
+        {
+            <div class="empty-state">
+                <strong>No hay líneas disponibles para activar.</strong>
+                <span>Primero debe registrar una línea nueva.</span>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="data-table selectable-table">
+                    <thead>
+                        <tr>
+                            <th>Seleccionar</th>
+                            <th>Número de teléfono</th>
+                            <th>Identificador de tarjeta</th>
+                            <th>Tipo de servicio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var linea in Model.Lineas)
+                        {
+                            string radioId = "linea-" + linea.Telefono;
+                            <tr>
+                                <td>
+                                    <input type="radio" asp-for="Telefono"
+                                           id="@radioId" value="@linea.Telefono"
+                                           data-phone="@linea.Telefono"
+                                           data-device="@linea.IdentificadorTelefono"
+                                           data-card="@linea.IdentificadorTarjeta"
+                                           data-type="@linea.TipoServicio" />
+                                </td>
+                                <td><label for="@radioId"><strong>@linea.Telefono</strong></label></td>
+                                <td>@linea.IdentificadorTarjeta</td>
+                                <td>@(linea.TipoServicio == "POSTPAGO" ? "Postpago" : "Prepago")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+    @if (Model.Lineas.Count > 0)
+    {
+        <section class="billing-card section-gap selection-panel" id="selection-panel" hidden>
+            <h2>Datos seleccionados</h2>
+
+            <dl class="selection-summary">
+                <div><dt>Teléfono</dt><dd id="selection-phone">-</dd></div>
+                <div><dt>ID teléfono</dt><dd id="selection-device">-</dd></div>
+                <div><dt>ID tarjeta</dt><dd id="selection-card">-</dd></div>
+                <div><dt>Tipo</dt><dd id="selection-type">-</dd></div>
+            </dl>
+
+            <div class="field identification-field">
+                <label asp-for="IdentificacionCliente">Identificación del cliente</label>
+                <input asp-for="IdentificacionCliente" maxlength="9" inputmode="numeric"
+                       placeholder="9 dígitos" autocomplete="off" />
+            </div>
+
+            <div class="action-container">
+                <button type="submit" class="calculate-button">Activar línea</button>
+            </div>
+        </section>
+    }
+</form>
+
+@section Scripts {
+    <script>
+        (() => {
+            const radios = document.querySelectorAll('input[name="Telefono"]');
+            const panel = document.getElementById('selection-panel');
+            if (!panel) return;
+
+            const showSelection = radio => {
+                panel.hidden = false;
+                document.getElementById('selection-phone').textContent = radio.dataset.phone;
+                document.getElementById('selection-device').textContent = radio.dataset.device;
+                document.getElementById('selection-card').textContent = radio.dataset.card;
+                document.getElementById('selection-type').textContent =
+                    radio.dataset.type === 'POSTPAGO' ? 'Postpago' : 'Prepago';
+            };
+
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => showSelection(radio));
+                radio.closest('tr')?.addEventListener('click', event => {
+                    if (event.target instanceof HTMLInputElement) return;
+                    radio.checked = true;
+                    showSelection(radio);
+                });
+            });
+
+            const selected = document.querySelector('input[name="Telefono"]:checked');
+            if (selected) showSelection(selected);
+        })();
+    </script>
+}

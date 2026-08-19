@@ -1,0 +1,56 @@
+@page
+@model ADM6.Pages.Administradores.GestionModel
+@{ ViewData["Title"] = "Administradores"; }
+
+<div class="page-heading"><h1>Administradores</h1><p>Mantenimiento de usuarios administrativos.</p></div>
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{ <div class="message @(Model.EsError ? "message-error" : "message-success")">@(Model.EsError ? "⚠" : "✓") @Model.Mensaje</div> }
+
+<section class="billing-card">
+    <div class="section-title"><h2>Usuarios registrados</h2><button type="button" class="btn-primary" onclick="nuevo()">Nuevo administrador</button></div>
+    <div class="table-responsive">
+    <table class="data-table">
+        <thead><tr><th>Identificación</th><th>Nombre</th><th>Correo</th><th>Usuario</th><th>Contraseña</th><th>Estado</th><th>Acciones</th></tr></thead>
+        <tbody>
+        @foreach (var a in Model.Administradores)
+        {
+            <tr onclick='editar(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(a)))'>
+                <td>@a.Identificacion</td><td>@a.Nombre @a.PrimerApellido @a.SegundoApellido</td>
+                <td>@a.CorreoElectronico</td><td>@a.Usuario</td><td>@a.Contrasena</td><td>@a.Estado</td>
+                <td onclick="event.stopPropagation()">
+                    <form method="post" asp-page-handler="CambiarEstado" class="inline-form">
+                        <input type="hidden" name="identificacion" value="@a.Identificacion" /><input type="hidden" name="estado" value="@a.Estado" />
+                        <button class="small-button" type="submit">@(a.Estado == "activo" ? "Inactivar" : "Activar")</button>
+                    </form>
+                    <form method="post" asp-page-handler="Eliminar" class="inline-form" onsubmit="return confirm('¿Está seguro de eliminar el registro del usuario de forma definitiva?')">
+                        <input type="hidden" name="identificacion" value="@a.Identificacion" /><button class="small-button danger-button" type="submit">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    </div>
+</section>
+
+<section id="editor" class="billing-card section-gap" hidden>
+    <h2 id="tituloEditor">Nuevo administrador</h2>
+    <form method="post" id="formEditor" asp-page-handler="Crear">
+        <div class="date-grid">
+            <div class="field"><label>Identificación</label><input asp-for="Entrada.Identificacion" id="identificacion" required /></div>
+            <div class="field"><label>Nombre</label><input asp-for="Entrada.Nombre" id="nombre" required /></div>
+            <div class="field"><label>Primer apellido</label><input asp-for="Entrada.PrimerApellido" id="apellido1" required /></div>
+            <div class="field"><label>Segundo apellido</label><input asp-for="Entrada.SegundoApellido" id="apellido2" required /></div>
+            <div class="field"><label>Correo electrónico</label><input asp-for="Entrada.CorreoElectronico" id="correo" type="email" required /></div>
+            <div class="field"><label>Usuario</label><input asp-for="Entrada.Usuario" id="usuario" required /></div>
+            <div class="field"><label>Contraseña nueva</label><input asp-for="Entrada.Contrasena" id="contrasena" type="password" minlength="14" maxlength="14" /><small>Déjela vacía para conservar la contraseña actual.</small></div>
+        </div>
+        <p class="field-help">La contraseña debe contener exactamente 14 caracteres.</p>
+        <button class="calculate-button" type="submit" id="guardar">Crear administrador</button>
+    </form>
+</section>
+
+<script>
+function nuevo(){ document.getElementById('editor').hidden=false; document.getElementById('formEditor').action='?handler=Crear'; document.getElementById('formEditor').reset(); document.getElementById('identificacion').readOnly=false; document.getElementById('tituloEditor').textContent='Nuevo administrador'; document.getElementById('guardar').textContent='Crear administrador'; }
+function editar(a){ document.getElementById('editor').hidden=false; document.getElementById('formEditor').action='?handler=Modificar'; document.getElementById('identificacion').value=a.Identificacion; document.getElementById('identificacion').readOnly=true; document.getElementById('nombre').value=a.Nombre; document.getElementById('apellido1').value=a.PrimerApellido; document.getElementById('apellido2').value=a.SegundoApellido; document.getElementById('correo').value=a.CorreoElectronico; document.getElementById('usuario').value=a.Usuario; document.getElementById('contrasena').value=''; document.getElementById('tituloEditor').textContent='Modificar administrador'; document.getElementById('guardar').textContent='Guardar cambios'; document.getElementById('editor').scrollIntoView({behavior:'smooth'}); }
+</script>

@@ -1,0 +1,552 @@
+﻿@page
+
+@model ADM6.Pages.Cliente.CancelarFactura.IndexModel
+@using System.Globalization
+
+@{
+    Layout = "/Pages/Shared/_ClienteLayout.cshtml";
+    ViewData["Title"] = "Cancelar factura";
+}
+
+
+<div class="page-heading">
+
+    <h1>
+        Cancelar factura pendiente
+    </h1>
+
+    <p>
+        Seleccione una línea postpago y cancele su factura pendiente.
+    </p>
+
+</div>
+
+
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{
+    <div class="message @(Model.EsError
+                          ? "message-error"
+                          : "message-success")">
+
+    <span>
+        @(Model.EsError ? "⚠" : "✓")
+    </span>
+
+        <span>
+            @Model.Mensaje
+        </span>
+
+    </div>
+}
+
+
+<div class="billing-card">
+
+    <h2>
+        Pago de factura
+    </h2>
+
+
+    <form method="post">
+
+        <!-- =====================================================
+             SELECCIÓN DE LÍNEA
+             ===================================================== -->
+
+        <div class="field">
+
+            <label for="NumeroLinea">
+                Seleccionar factura pendiente
+            </label>
+
+            <select asp-for="FacturaId"
+                    id="NumeroLinea"
+                    onchange="actualizarFactura()">
+
+                @foreach (var linea in Model.Lineas)
+                {
+                    <option value="@linea.FacturaId"
+                            data-numero="@linea.Numero"
+                            data-factura-id="@linea.FacturaId"
+                            data-monto="@linea.MontoFactura.ToString(CultureInfo.InvariantCulture)"
+                            data-pagada="@linea.Pagada">
+
+                        @linea.Numero - Factura #@linea.FacturaId -
+                        @(linea.MontoFactura > 0
+                                            ? $"Factura pendiente ₡{linea.MontoFactura:N0}"
+                                            : "Sin factura pendiente")
+
+                </option>
+                                }
+
+            </select>
+
+        </div>
+
+
+        <!-- =====================================================
+             INFORMACIÓN DE LA FACTURA
+             ===================================================== -->
+
+        <div class="information-grid">
+
+            <div class="info-card">
+
+                <h3>
+                    Factura pendiente
+                </h3>
+
+                <p>
+                    Línea seleccionada:
+                </p>
+
+                <strong id="lineaActual">
+                    @Model.NumeroLinea
+                </strong>
+
+
+                <p class="info-spacer">
+                    Número de factura:
+                </p>
+
+                <strong id="facturaActual">
+                    @(Model.Lineas
+                                        .FirstOrDefault(
+                                        x => x.FacturaId == Model.FacturaId)
+                                        ?.FacturaId ?? 0)
+                </strong>
+
+
+                <p class="info-spacer">
+                    Monto pendiente:
+                </p>
+
+                <strong id="montoFactura" class="metric-value">
+
+                    ₡@(
+                                        Model.Lineas
+                                        .FirstOrDefault(
+                                        x => x.FacturaId == Model.FacturaId)
+                                        ?.MontoFactura
+                                        .ToString("N0")
+                                        ?? "0"
+                                        )
+
+                </strong>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <h3>
+                    Información
+                </h3>
+
+                <p>
+                    La factura es de solo lectura.
+                </p>
+
+                <p>
+                    El pago se procesará mediante
+                    el Proveedor.
+                </p>
+
+                <p>
+                    Una vez confirmado el pago,
+                    la factura quedará cancelada.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             DATOS DE TARJETA
+             ===================================================== -->
+
+        <div class="form-section">
+
+            <h3 class="form-section-title">
+
+                Datos de la tarjeta
+
+            </h3>
+
+
+            <!-- NÚMERO -->
+
+            <div class="field">
+
+                <label for="NumeroTarjeta">
+                    Número de tarjeta
+                </label>
+
+                <input asp-for="NumeroTarjeta"
+                       id="NumeroTarjeta"
+                       type="text"
+                       maxlength="14"
+                       inputmode="numeric"
+                       autocomplete="off"
+                       placeholder="1234 5678 9012"
+                       oninput="formatearTarjeta(this)" />
+
+                <small>
+                    Ingrese 12 dígitos.
+                </small>
+
+            </div>
+
+
+            <!-- NOMBRE -->
+
+            <div class="field">
+
+                <label for="NombreTarjeta">
+                    Nombre del dueño
+                </label>
+
+                <input asp-for="NombreTarjeta"
+                       id="NombreTarjeta"
+                       type="text"
+                       maxlength="100"
+                       autocomplete="off"
+                       placeholder="Nombre completo" />
+
+            </div>
+
+
+            <!-- VENCIMIENTO + CVV -->
+
+            <div class="information-grid">
+
+                <div class="field">
+
+                    <label for="Vencimiento">
+                        Fecha de vencimiento
+                    </label>
+
+                    <input asp-for="Vencimiento"
+                           id="Vencimiento"
+                           type="text"
+                           maxlength="5"
+                           inputmode="numeric"
+                           autocomplete="off"
+                           placeholder="MM/AA"
+                           oninput="formatearVencimiento(this)" />
+
+                    <small>
+                        Debe ser igual o posterior
+                        al mes actual.
+                    </small>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="CodigoSeguridad">
+                        Código de seguridad
+                    </label>
+
+                    <input asp-for="CodigoSeguridad"
+                           id="CodigoSeguridad"
+                           type="password"
+                           maxlength="3"
+                           inputmode="numeric"
+                           autocomplete="off"
+                           placeholder="123" />
+
+                    <small>
+                        3 dígitos.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             RESUMEN
+             ===================================================== -->
+
+        <div class="information-grid section-gap">
+
+            <div class="info-card">
+
+                <h3>
+                    Resumen del pago
+                </h3>
+
+                <p>
+                    Línea:
+
+                    <strong id="resumenLinea">
+                        @Model.NumeroLinea
+                    </strong>
+                </p>
+
+
+                <p>
+                    Factura:
+
+                    <strong id="resumenFactura">
+
+                        @(Model.Lineas
+                                                .FirstOrDefault(
+                                                x => x.FacturaId == Model.FacturaId)
+                                                ?.FacturaId ?? 0)
+
+                    </strong>
+
+                </p>
+
+
+                <p>
+                    Total a pagar:
+
+                    <strong id="resumenMonto">
+
+                        ₡@(
+                                                Model.Lineas
+                                                .FirstOrDefault(
+                                                x => x.FacturaId == Model.FacturaId)
+                                                ?.MontoFactura
+                                                .ToString("N0")
+                                                ?? "0"
+                                                )
+
+                    </strong>
+
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <h3>
+                    Estado
+                </h3>
+
+                <p id="estadoFactura">
+
+                    @{
+                        var lineaSeleccionada =
+                        Model.Lineas.FirstOrDefault(
+                        x => x.FacturaId == Model.FacturaId);
+                    }
+
+                    @if (lineaSeleccionada?.MontoFactura > 0
+                                        && lineaSeleccionada?.Pagada == false)
+                    {
+                        <strong>
+                            Factura pendiente
+                        </strong>
+                    }
+                    else
+                    {
+                        <strong>
+                            Sin factura pendiente
+                        </strong>
+                    }
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             BOTÓN
+             ===================================================== -->
+
+        <div class="action-container">
+
+            <button type="submit"
+                    class="calculate-button"
+                    id="botonPagar">
+
+                <span>
+                    ▣
+                </span>
+
+                Cancelar factura
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<script>
+
+    function actualizarFactura() {
+
+        const select =
+            document.getElementById("NumeroLinea");
+
+        const option =
+            select.options[
+                select.selectedIndex
+            ];
+
+        if (!option) {
+            return;
+        }
+
+
+        const numero =
+            option.dataset.numero;
+
+        const facturaId =
+            Number(
+                option.dataset.facturaId
+            ) || 0;
+
+        const monto =
+            Number(
+                option.dataset.monto
+            ) || 0;
+
+        const pagada =
+            option.dataset.pagada === "True"
+            || option.dataset.pagada === "true";
+
+
+        document.getElementById(
+            "lineaActual"
+        ).textContent =
+            numero;
+
+
+        document.getElementById(
+            "facturaActual"
+        ).textContent =
+            facturaId;
+
+
+        document.getElementById(
+            "montoFactura"
+        ).textContent =
+            "₡" +
+            monto.toLocaleString("es-CR");
+
+
+        document.getElementById(
+            "resumenLinea"
+        ).textContent =
+            numero;
+
+
+        document.getElementById(
+            "resumenFactura"
+        ).textContent =
+            facturaId;
+
+
+        document.getElementById(
+            "resumenMonto"
+        ).textContent =
+            "₡" +
+            monto.toLocaleString("es-CR");
+
+
+        const estado =
+            document.getElementById(
+                "estadoFactura");
+
+        const boton =
+            document.getElementById(
+                "botonPagar");
+
+
+        if (monto > 0 && !pagada) {
+
+            estado.innerHTML =
+                "<strong>Factura pendiente</strong>";
+
+            boton.disabled = false;
+
+            boton.style.opacity = "1";
+
+        } else {
+
+            estado.innerHTML =
+                "<strong>Sin factura pendiente</strong>";
+
+            boton.disabled = true;
+
+            boton.style.opacity = "0.5";
+        }
+
+    }
+
+
+    function formatearTarjeta(input) {
+
+        let valor =
+            input.value
+                .replace(/\D/g, "")
+                .substring(0, 12);
+
+
+        let grupos = [];
+
+        for (
+            let i = 0;
+            i < valor.length;
+            i += 4
+        ) {
+            grupos.push(
+                valor.substring(
+                    i,
+                    i + 4
+                )
+            );
+        }
+
+
+        input.value =
+            grupos.join(" ");
+    }
+
+
+    function formatearVencimiento(input) {
+
+        let valor =
+            input.value
+                .replace(/\D/g, "")
+                .substring(0, 4);
+
+
+        if (valor.length > 2) {
+
+            valor =
+                valor.substring(0, 2)
+                + "/"
+                + valor.substring(2);
+        }
+
+
+        input.value = valor;
+    }
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            actualizarFactura();
+
+        }
+    );
+
+</script>

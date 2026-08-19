@@ -1,0 +1,70 @@
+@page
+@model ADM6.Pages.NuevaLinea.NuevoModel
+
+@{
+    ViewData["Title"] = "Registrar nueva línea";
+}
+
+<div class="page-heading page-heading-actions">
+    <div>
+        <h1>Registrar nueva línea</h1>
+        <p>Ingrese los datos del servicio que quedará disponible para venta.</p>
+    </div>
+    <a class="btn-secondary command-link" asp-page="/NuevaLinea/Index">Volver al listado</a>
+</div>
+
+<div class="billing-card">
+    <h2>Datos de la línea</h2>
+
+    <form method="post">
+        <div class="date-grid">
+            <div class="field">
+                <label asp-for="Telefono">Número de teléfono</label>
+                <input asp-for="Telefono" maxlength="8" inputmode="numeric"
+                       placeholder="8 dígitos" autocomplete="off" />
+            </div>
+
+            <div class="field">
+                <label asp-for="IdentificadorTelefono">Identificador del teléfono</label>
+                <input asp-for="IdentificadorTelefono" maxlength="16" inputmode="numeric"
+                       placeholder="16 dígitos" autocomplete="off" />
+            </div>
+
+            <div class="field">
+                <label asp-for="IdentificadorTarjeta">Identificador de tarjeta</label>
+                <input asp-for="IdentificadorTarjeta" maxlength="19" inputmode="numeric"
+                       placeholder="19 dígitos" autocomplete="off" />
+            </div>
+
+            <div class="field">
+                <label asp-for="TipoServicio">Tipo de servicio</label>
+                <select asp-for="TipoServicio">
+                    <option value="PREPAGO">Prepago</option>
+                    <option value="POSTPAGO">Postpago</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="information-grid">
+            <div class="info-card">
+                <h3>Estado inicial</h3>
+                <p>La línea se registrará como <strong>Disponible</strong>.</p>
+            </div>
+            <div class="info-card">
+                <h3>Validaciones</h3>
+                <p>Teléfono: <strong>8 dígitos</strong>.</p>
+                <p>ID teléfono: <strong>16 dígitos</strong>.</p>
+                <p>ID tarjeta: <strong>19 dígitos</strong>.</p>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+        {
+            <div class="message message-error" role="alert">@Model.Mensaje</div>
+        }
+
+        <div class="action-container">
+            <button type="submit" class="calculate-button">Registrar línea</button>
+        </div>
+    </form>
+</div>

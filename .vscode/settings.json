@@ -1,0 +1,13 @@
+{
+    "python.analysis.extraPaths": [
+        "./Proyecto/src"
+    ],
+    "java.project.sourcePaths": [
+        "ProveedorJava/ProveedorTelefonico/src"
+    ],
+    "java.project.outputPath": "out",
+    "java.project.referencedLibraries": [
+        "ProveedorJava/ProveedorTelefonico/src/lib/*.jar"
+    ],
+    "dotnet.preferCSharpExtension": true
+}

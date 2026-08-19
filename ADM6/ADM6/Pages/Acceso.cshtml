@@ -1,0 +1,84 @@
+@page "/"
+@{
+    Layout = null;
+    ViewData["Title"] = "Acceso";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Acceso - Central General</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="public-page access-page">
+    <header class="public-header">
+        <div class="page-width public-header-inner">
+            <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.4 3.5 5.8 5.1c-.8.8-.9 2.1-.3 3.1 2.3 3.8 5.5 6.9 9.3 9.3 1 .6 2.3.5 3.1-.3l1.6-1.6c.5-.5.5-1.3 0-1.8l-2.4-2.4c-.4-.4-1-.5-1.5-.2l-1.7 1c-1.7-1-3.1-2.4-4.1-4.1l1-1.7c.3-.5.2-1.1-.2-1.5L9.2 3.5c-.5-.5-1.3-.5-1.8 0Z" /></svg></span>
+            <a class="wordmark wordmark-public" asp-page="/Acceso"><strong>Central General</strong><span>Control de llamadas</span></a>
+        </div>
+    </header>
+
+    <main class="access-main page-width">
+        <div class="access-heading">
+            <span class="access-heading-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 3H6.8C5.8 3 5 3.8 5 4.8v14.4c0 1 .8 1.8 1.8 1.8H13M14 8l4 4-4 4M18 12H9" /></svg></span>
+            <h1>Ingresar</h1>
+            <p>Seleccione el tipo de cuenta para continuar.</p>
+            <span class="heading-rule" aria-hidden="true"></span>
+        </div>
+
+        <nav class="access-options" aria-label="Tipos de acceso">
+            <a class="access-option access-option-admin" asp-page="/Administradores/Login">
+                <span class="option-icon admin-logo" aria-hidden="true"><svg viewBox="0 0 24 24"><defs><linearGradient id="admin-logo-gradient" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#10d9dc" /><stop offset="1" stop-color="#4e9cf5" /></linearGradient></defs><path d="M18.6 20.7c-.8 1-2 1.5-3.3 1.5H8.2c-1.3 0-2.5-.7-3.2-1.8L.9 12.9a3.6 3.6 0 0 1 0-3.7L5 2.1C5.7.9 6.9.3 8.2.3h7.6c1.3 0 2.5.7 3.2 1.8l4.3 7.4a3.6 3.6 0 0 1 0 3.7l-3.4 5.9" fill="none" stroke="url(#admin-logo-gradient)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" /><circle cx="12" cy="11.1" r="3.8" fill="none" stroke="url(#admin-logo-gradient)" stroke-width="1.9" /></svg></span>
+                <span class="option-copy"><strong>Cuenta administrativa</strong><small>Gestión del sistema y de las líneas telefónicas</small><em><svg viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v9H5z" /></svg>Acceso con permisos completos</em></span>
+                <span class="access-arrow" aria-hidden="true">Continuar <b>→</b></span>
+            </a>
+            <a class="access-option access-option-client" asp-page="/Cliente/Login">
+                <span class="option-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2" /><path d="M5.5 20c.4-3.7 2.7-5.6 6.5-5.6s6.1 1.9 6.5 5.6" /></svg></span>
+                <span class="option-copy"><strong>Cuenta de cliente</strong><small>Consulta de líneas, saldos y facturación</small><em><svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z" /><circle cx="12" cy="12" r="2.2" /></svg>Acceso a información de cuenta</em></span>
+                <span class="access-arrow" aria-hidden="true">Continuar <b>→</b></span>
+            </a>
+        </nav>
+
+        <section class="access-support" aria-label="Soporte técnico">
+            <strong><span class="support-question-icon" aria-hidden="true">?</span><span class="support-title">¿Necesita ayuda?</span></strong>
+            <p>Contáctenos para recibir asistencia.</p>
+            <button class="support-button" type="button" data-support-open><span aria-hidden="true">✉</span> Soporte técnico</button>
+        </section>
+    </main>
+    <footer class="access-footer">© 2026 Central General. Todos los derechos reservados.</footer>
+
+    <div class="support-modal" data-support-modal hidden>
+        <div class="support-modal-card" role="dialog" aria-modal="true" aria-labelledby="support-title">
+            <button class="support-modal-close" type="button" data-support-close aria-label="Cerrar ventana">&times;</button>
+            <span class="support-modal-icon" aria-hidden="true">✉</span>
+            <h2 id="support-title">Soporte técnico</h2>
+            <p>¿Necesita ayuda? Contácteme.</p>
+            <strong>José Ramsés Aguilar Monge</strong>
+            <a href="mailto:jm0760195@gmail.com">jm0760195@gmail.com</a>
+            <a href="tel:85992849">Tel. 85992849</a>
+        </div>
+    </div>
+
+    <script>
+        (() => {
+            const modal = document.querySelector("[data-support-modal]");
+            const openButton = document.querySelector("[data-support-open]");
+            const closeButton = document.querySelector("[data-support-close]");
+
+            const closeModal = () => { modal.hidden = true; };
+            openButton?.addEventListener("click", () => {
+                modal.hidden = false;
+                closeButton?.focus();
+            });
+            closeButton?.addEventListener("click", closeModal);
+            modal?.addEventListener("click", event => {
+                if (event.target === modal) closeModal();
+            });
+            document.addEventListener("keydown", event => {
+                if (event.key === "Escape" && modal && !modal.hidden) closeModal();
+            });
+        })();
+    </script>
+</body>
+</html>

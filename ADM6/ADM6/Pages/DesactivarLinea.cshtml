@@ -1,0 +1,77 @@
+@page
+@model ADM6.Pages.DesactivarLineaModel
+
+@{
+    ViewData["Title"] = "Devolución de línea";
+}
+
+<div class="page-heading">
+    <h1>Devolución de línea telefónica</h1>
+    <p>Consulte las líneas en uso y desactive el servicio devuelto por el cliente.</p>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{
+    <div class="message @(Model.EsError ? "message-error" : "message-success")"
+         role="status">
+        @Model.Mensaje
+    </div>
+}
+
+<section class="table-card" aria-labelledby="titulo-lineas-activas">
+    <div class="table-card-header">
+        <div>
+            <h2 id="titulo-lineas-activas">Líneas en uso</h2>
+            <p>@Model.Lineas.Count línea(s) activa(s)</p>
+        </div>
+    </div>
+
+    @if (Model.Lineas.Count == 0)
+    {
+        <div class="empty-state">
+            <strong>No hay líneas activas.</strong>
+            <span>Las líneas asociadas a clientes aparecerán en este listado.</span>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Teléfono</th>
+                        <th>ID tarjeta</th>
+                        <th>ID teléfono</th>
+                        <th>Identificación</th>
+                        <th>Cliente</th>
+                        <th>Tipo</th>
+                        <th class="actions-column">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var linea in Model.Lineas)
+                    {
+                        <tr>
+                            <td><strong>@linea.Telefono</strong></td>
+                            <td>@linea.IdentificadorTarjeta</td>
+                            <td>@linea.IdentificadorTelefono</td>
+                            <td>@linea.IdentificacionCliente</td>
+                            <td>@linea.NombreCliente</td>
+                            <td>@(linea.TipoServicio == "POSTPAGO" ? "Postpago" : "Prepago")</td>
+                            <td>
+                                <form method="post"
+                                      onsubmit="return confirm('¿Está seguro que desea desactivar la línea?');">
+                                    <input type="hidden" name="telefono" value="@linea.Telefono" />
+                                    <button type="submit" class="small-button danger-button"
+                                            aria-label="Desactivar la línea @linea.Telefono">
+                                        Desactivar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

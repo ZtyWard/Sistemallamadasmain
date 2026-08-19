@@ -1,0 +1,56 @@
+@page
+@model ADM6.Pages.Cliente.LineasModel
+@{ Layout = "_ClienteLayout"; ViewData["Title"] = "Mis líneas"; }
+
+<div class="page-heading">
+    <h1>Mis líneas</h1>
+    <p>Consulte sus líneas activas, saldos y facturas pendientes.</p>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{
+    <div class="message message-error">⚠ @Model.Mensaje</div>
+}
+
+<section class="billing-card">
+    <h2>Líneas prepago</h2>
+    <p>Haga doble clic sobre una línea para cargar saldo.</p>
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead><tr><th>Teléfono</th><th>Saldo disponible</th></tr></thead>
+            <tbody>
+            @foreach (var linea in Model.Prepago)
+            {
+                <tr ondblclick="location.href='@Url.Page("/Cliente/RecargarSaldo/Index", new { telefono = linea.Telefono })'">
+                    <td>@linea.Telefono</td><td>₡@linea.Saldo.ToString("N2")</td>
+                </tr>
+            }
+            @if (!Model.Prepago.Any())
+            { <tr><td colspan="2">No tiene líneas prepago activas.</td></tr> }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="billing-card section-gap">
+    <h2>Líneas postpago</h2>
+    <p>Haga doble clic sobre una factura pendiente para pagarla.</p>
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead><tr><th>Teléfono</th><th>Facturación pendiente</th></tr></thead>
+            <tbody>
+            @foreach (var linea in Model.Postpago)
+            {
+                string destino = linea.MontoPendiente > 0
+                    ? Url.Page("/Cliente/CancelarFactura/Index", new { facturaId = linea.FacturaId }) ?? "#"
+                    : "#";
+                <tr ondblclick="location.href='@destino'">
+                    <td>@linea.Telefono</td><td>₡@linea.MontoPendiente.ToString("N2")</td>
+                </tr>
+            }
+            @if (!Model.Postpago.Any())
+            { <tr><td colspan="2">No tiene líneas postpago activas.</td></tr> }
+            </tbody>
+        </table>
+    </div>
+</section>
